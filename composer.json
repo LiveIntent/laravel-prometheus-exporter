@@ -13,6 +13,7 @@
         "php": "^8.0",
         "illuminate/contracts": "^8.0",
         "laravel/telescope": "^4.4",
+        "promphp/prometheus_client_php": "^2.2",
         "spatie/laravel-package-tools": "^1.4.3"
     },
     "require-dev": {
@@ -35,7 +36,10 @@
     "scripts": {
         "psalm": "vendor/bin/psalm",
         "test": "./vendor/bin/testbench package:test --parallel --no-coverage",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-install": [
+            "@php artisan metris:install --ansi"
+        ]
     },
     "config": {
         "sort-packages": true
