@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace LiveIntent\TelescopePrometheusExporter\Tests;
 
 class ExampleTest extends TestCase
 {
