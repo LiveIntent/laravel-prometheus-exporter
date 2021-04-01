@@ -22,7 +22,7 @@ class TelescopePrometheusExporter
             ->filter(fn ($config) => $config['enabled'])
             ->map(fn ($config, $class) => new $class($registry, data_get($config, 'config', [])));
 
-        Telescope::afterRecording(function (Telescope $instance, IncomingEntry $entry) use ($exporters) {
+        Telescope::afterRecording(function (Telescope $_, IncomingEntry $entry) use ($exporters) {
             rescue(fn () => $exporters->filter->shouldExport($entry)->each->export($entry));
         });
     }
