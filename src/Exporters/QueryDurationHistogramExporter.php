@@ -33,7 +33,7 @@ class QueryDurationHistogramExporter extends Exporter
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
-            'mysql',
+            'db',
             'query_duration_milliseconds',
             'The request duration recorded in milliseconds.',
             array_keys($labels),

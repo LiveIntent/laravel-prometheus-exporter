@@ -69,6 +69,126 @@ Exporters\RequestDurationHistogramExporter::class => [
 | method      | the http method        | GET, POST, etc     |
 | path        | the uri of the request | '/', '/posts', etc |
 
+#### Request Memory Usage Historam Exporter - `http_request_memory_usage_megabytes`
+
+This will export histogram data for request memory usage. 
+
+##### Example
+
+```php
+Exporters\RequestMemoryUsageHistogramExporter::class => [
+    'enabled' => env('EXPORT_MEMORY_USAGE_HISTOGRAM', true),
+    'config' => [
+        'buckets' => [
+            5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+        ],
+    ],
+],
+```
+
+##### Labels
+
+| name        | description            | example            |
+|:------------|:-----------------------|--------------------|
+| service     | name of the service    | my-amazing-api     |
+| environment | the environment        | qa, prod, etc      |
+| code        | the http response code | 200, 400, etc      |
+| method      | the http method        | GET, POST, etc     |
+| path        | the uri of the request | '/', '/posts', etc |
+
+#### Job Duration Historam Exporter - `job_execution_duration_milliseconds_bucket`
+
+This will export histogram data for job execution duration. 
+
+##### Example
+
+```php
+Exporters\JobDurationHistogramExporter::class => [
+    'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
+    'config' => [
+        'buckets' => [
+            5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+        ],
+    ],
+],
+```
+
+##### Labels
+
+| name        | description                                | example                   |
+|:------------|:-------------------------------------------|---------------------------|
+| service     | name of the service                        | my-amazing-api            |
+| environment | the environment                            | qa, prod, etc             |
+| name        | the classname of the job                   | App\\Jobs\\ProcessPayment |
+| attempts    | the number of times the job has been tried | 1                         |
+| status      | the job status                             | procesed, failed          |
+
+#### Query Duration Historam Exporter - `db_query_duration_milliseconds_bucket`
+
+This will export histogram data for query execution times. 
+
+##### Example
+
+```php
+Exporters\QueryDurationHistogramExporter::class => [
+    'enabled' => env('EXPORT_QUERY_DURATION_HISTOGRAM', true),
+    'config' => [
+        'buckets' => [
+            5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+        ],
+    ],
+],
+```
+
+##### Labels
+
+| name        | description         | example               |
+|:------------|:--------------------|-----------------------|
+| service     | name of the service | my-amazing-api        |
+| environment | the environment     | qa, prod, etc         |
+| sql         | the sql query       | SELECT * FROM `users` |
+
 ### Writing New Exporters
 
-is easy, will explain
+You may also write your own exporter. You only need to implement two methods, `shouldExport` and `export`.
+
+The following example increments a counter every time the `/` is visited.
+
+```php
+<?php
+
+namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+
+use Laravel\Telescope\EntryType;
+use Laravel\Telescope\IncomingEntry;
+
+class HomePageVisitsCountExporter extends Exporter
+{
+    /**
+     * Check if this exporter should export something for an entry.
+     *
+     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @return bool
+     */
+    public function shouldExport(IncomingEntry $entry)
+    {
+        return $entry->type === EntryType::REQUEST && $entry->content['uri'] === '/';
+    }
+
+    /**
+     * Export something for an entry.
+     *
+     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @return void
+     */
+    public function export(IncomingEntry $entry)
+    {
+        $counter = $this->registry->getOrRegisterCounter('', 'home_page_visits_counter', 'it is a silly example');
+        $counter->inc();
+    }
+}
+```
+
+Register your Exporter class by placing it in list of exporters found in the `metrics` config file.
+
+For more advanced usage, or if you need to hook into an event that Telescope does not record, you may implement the `register` method on the exporter which will be called during application startup.
