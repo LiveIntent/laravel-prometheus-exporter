@@ -34,7 +34,7 @@ abstract class Exporter
      *
      * @param  \Illuminate\Contracts\Foundation\Application  $app
      * @param  \Prometheus\CollectorRegistry  $registry
-     * @param  array|null  $config
+     * @param  array  $config
      * @return void
      */
     public function __construct(Application $app, CollectorRegistry $registry, array $config = [])

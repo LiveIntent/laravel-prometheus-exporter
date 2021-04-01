@@ -20,6 +20,7 @@ trait RecordsJobMetrics
     /**
      * Register any additional things.
      *
+     * @psalm-suppress UndefinedInterfaceMethod
      * @return void
      */
     public function register()
