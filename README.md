@@ -1,9 +1,9 @@
 # Laravel Telescope Prometheus Exporter
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/liveintent/laravel_prometheus_exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/laravel_prometheus_exporter)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/liveintent/laravel_prometheus_exporter/run-tests?label=tests)](https://github.com/liveintent/laravel_prometheus_exporter/actions?query=workflow%3ATests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/liveintent/laravel_prometheus_exporter/Check%20&%20fix%20styling?label=code%20style)](https://github.com/liveintent/laravel_prometheus_exporter/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/liveintent/laravel_prometheus_exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/laravel_prometheus_exporter)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/liveintent/telescope-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/telescope-prometheus-exporter)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/liveintent/telescope-prometheus-exporter/run-tests?label=tests)](https://github.com/liveintent/telescope-prometheus-exporter/actions?query=workflow%3ATests+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/liveintent/telescope-prometheus-exporter/Check%20&%20fix%20styling?label=code%20style)](https://github.com/liveintent/telescope-prometheus-exporter/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/liveintent/telescope-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/telescope-prometheus-exporter)
 
 
 This is a Laravel package that collects data via [Telescope](https://laravel.com/docs/8.x/telescope) and exposes a `/metrics` endpoint in your application which can then be scraped by [Prometheus](https://prometheus.io/).
