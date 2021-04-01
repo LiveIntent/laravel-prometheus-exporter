@@ -42,7 +42,7 @@ return [
     | Supported drivers: "apc", "redis", "memory"
     */
 
-    'driver' => env('METRICS_STORAGE_DRIVER', 'redis'),
+    'driver' => env('METRICS_STORAGE_DRIVER', 'memory'),
 
     'storage' => [
         'redis' => [
