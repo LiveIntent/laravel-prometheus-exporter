@@ -152,7 +152,7 @@ Exporters\QueryDurationHistogramExporter::class => [
 
 You may also write your own exporter. You only need to implement two methods, `shouldExport` and `export`.
 
-The following example increments a counter every time the `/` is visited.
+The following example increments a counter every time the `/` route is visited.
 
 ```php
 <?php
@@ -176,19 +176,22 @@ class HomePageVisitsCountExporter extends Exporter
     }
 
     /**
-     * Export something for an entry.
+     * Export metrics for an entry.
      *
      * @param \Laravel\Telescope\IncomingEntry  $entry
      * @return void
      */
     public function export(IncomingEntry $entry)
     {
-        $counter = $this->registry->getOrRegisterCounter('', 'home_page_visits_counter', 'it is a silly example');
+        $counter = $this->registry->getOrRegisterCounter(
+            '', 'home_page_visits_counter', 'it is a silly example'
+        );
+
         $counter->inc();
     }
 }
 ```
 
-Register your Exporter class by placing it in list of exporters found in the `metrics` config file.
+Register your Exporter class by placing it in the list of exporters found in the `metrics` config file.
 
 For more advanced usage, or if you need to hook into an event that Telescope does not record, you may implement the `register` method on the exporter which will be called during application startup.
