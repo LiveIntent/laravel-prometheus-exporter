@@ -34,6 +34,12 @@ The storage drivers currently supperted are redis, apc, and in-memory. You may a
 
 You will need the appropriate `pecl` extension installed ([apc](https://pecl.php.net/package/APCU) or [php-redis](https://pecl.php.net/package/redis)).
 
+If you need to clear the storage, you may do so with:
+
+```bash
+php artisan metrics:clear
+```
+
 ### Exporters
 
 #### Request Duration Historam Exporter - `http_request_duration_milliseconds_bucket`
