@@ -2,12 +2,10 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Exporters;
 
-use Laravel\Telescope\EntryType;
 use Laravel\Telescope\IncomingEntry;
-use Illuminate\Queue\Events\JobProcessing;
-use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobFailed;
-use Illuminate\Contracts\Queue\Job;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 
 class JobDurationHistogramExporter extends Exporter
 {
@@ -29,32 +27,31 @@ class JobDurationHistogramExporter extends Exporter
             $this->startTime = microtime(true);
         });
 
-        // dump('register');
-        // $content = [
-        //     'status' => 'processed',
-        //     'connection' => $connection,
-        //     'queue' => $queue,
-        //     'name' => $payload['displayName'],
-        //     'tries' => $payload['maxTries'],
-        //     'timeout' => $payload['timeout'],
-        // ]
         $this->app['events']->listen(JobProcessed::class, function (JobProcessed $event) {
-            echo "The job was processed\n";
-            // dump($event->job->getConnectionName());
+            $job = $event->job;
+
             $entry = IncomingEntry::make([
+                'name' => $job->resolveName(),
+                'attempts' => $job->attempts(),
                 'status' => 'processed',
-                'name' => 'test',
-                'tries' => 2
+                'duration' => microtime(true) - $this->startTime
             ]);
 
             $this->export($entry);
         });
 
-        // $this->app['events']->listen(JobFailed::class, function () {
-        //     echo "The job was failed\n";
-        // });
+        $this->app['events']->listen(JobFailed::class, function (JobFailed $event) {
+            $job = $event->job;
 
-        // $app['events']->listen(JobFailed::class, [$this, 'recordFailedJob']);
+            $entry = IncomingEntry::make([
+                'name' => $job->resolveName(),
+                'attempts' => $job->attempts(),
+                'status' => 'failed',
+                'duration' => microtime(true) - $this->startTime
+            ]);
+
+            $this->export($entry);
+        });
     }
 
     /**
@@ -76,13 +73,11 @@ class JobDurationHistogramExporter extends Exporter
      */
     public function export(IncomingEntry $entry)
     {
-        dump($entry);
-
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
             'name' => $entry->content['name'],
-            'tries' => $entry->content['tries'],
+            'attempts' => $entry->content['attempts'],
             'status' => $entry->content['status'],
         ];
 
@@ -94,16 +89,8 @@ class JobDurationHistogramExporter extends Exporter
             $this->config['buckets']
         );
 
-        dump($this->startTime);
-        // if (!$this->startTime) {
-        //     return;
-        // }
-
-        // $duration = microtime(true) - $this->startTime;
-        // dump($duration);
-
         $histogram->observe(
-            1,
+            $entry->content['duration'],
             array_values($labels)
         );
     }
