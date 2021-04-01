@@ -85,7 +85,13 @@ return [
     'exporters' => [
         Exporters\RequestDurationHistogramExporter::class => [
             'enabled' => env('EXPORT_REQUEST_DURATION_HISTOGRAM', true),
-        ]
+            'config' => [
+                'buckets' => [
+                    5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+                ]
+            ]
+        ],
+
         // Watchers\BatchWatcher::class => env('TELESCOPE_BATCH_WATCHER', true),
         // Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
 
