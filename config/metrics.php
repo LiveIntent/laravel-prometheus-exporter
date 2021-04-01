@@ -92,6 +92,14 @@ return [
             ]
         ],
 
+        Exporters\RequestMemoryUsageHistogramExporter::class => [
+            'enabled' => env('EXPORT_REQUEST_MEMORY_USAGE_HISTOGRAM', true),
+            'config' => [
+                'buckets' => [
+                    0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
+                ]
+            ]
+        ],
         // Watchers\BatchWatcher::class => env('TELESCOPE_BATCH_WATCHER', true),
         // Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
 
