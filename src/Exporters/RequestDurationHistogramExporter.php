@@ -27,8 +27,8 @@ class RequestDurationHistogramExporter extends Exporter
     public function export(IncomingEntry $entry)
     {
         $labels = [
-            'service' => 'service name',
-            'environment' => 'qa',
+            'service' => config('app.name'),
+            'environment' => config('app.env'),
             'code' => $entry->content['response_status'],
             'method' => $entry->content['method'],
             'path' => $entry->content['uri'],
