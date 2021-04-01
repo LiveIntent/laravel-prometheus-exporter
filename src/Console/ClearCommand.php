@@ -2,8 +2,8 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Console;
 
-use Prometheus\Storage\Adapter;
 use Illuminate\Console\Command;
+use Prometheus\Storage\Adapter;
 
 class ClearCommand extends Command
 {

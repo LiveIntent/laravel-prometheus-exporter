@@ -2,8 +2,8 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Exporters;
 
-use Prometheus\CollectorRegistry;
 use Laravel\Telescope\IncomingEntry;
+use Prometheus\CollectorRegistry;
 
 abstract class Exporter
 {

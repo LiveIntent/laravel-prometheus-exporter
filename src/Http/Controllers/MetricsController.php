@@ -2,9 +2,9 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Http\Controllers;
 
-use Prometheus\RenderTextFormat;
-use Prometheus\CollectorRegistry;
 use Illuminate\Routing\Controller;
+use Prometheus\CollectorRegistry;
+use Prometheus\RenderTextFormat;
 
 class MetricsController extends Controller
 {

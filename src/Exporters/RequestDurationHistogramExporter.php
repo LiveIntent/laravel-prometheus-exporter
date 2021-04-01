@@ -43,7 +43,8 @@ class RequestDurationHistogramExporter extends Exporter
         );
 
         $histogram->observe(
-            $entry->content['duration'], array_values($labels)
+            $entry->content['duration'],
+            array_values($labels)
         );
     }
 }
