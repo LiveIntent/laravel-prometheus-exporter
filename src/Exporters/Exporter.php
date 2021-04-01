@@ -4,9 +4,17 @@ namespace LiveIntent\TelescopePrometheusExporter\Exporters;
 
 use Prometheus\CollectorRegistry;
 use Laravel\Telescope\IncomingEntry;
+use Illuminate\Contracts\Foundation\Application;
 
 abstract class Exporter
 {
+    /**
+     * The application instance.
+     *
+     * @var \Illuminate\Contracts\Foundation\Application
+     */
+    protected $app;
+
     /**
      * The prometheus collector registry.
      *
@@ -24,11 +32,14 @@ abstract class Exporter
     /**
      * Create a new exporter.
      *
-     * @param \Prometheus\CollectorRegistry  $registry
+     * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param  \Prometheus\CollectorRegistry  $registry
+     * @param  array|null  $config
      * @return void
      */
-    public function __construct(CollectorRegistry $registry, array $config = [])
+    public function __construct(Application $app, CollectorRegistry $registry, array $config = [])
     {
+        $this->app = $app;
         $this->registry = $registry;
         $this->config = $config;
     }

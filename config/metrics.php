@@ -42,7 +42,7 @@ return [
     | Supported drivers: "apc", "redis", "memory"
     */
 
-    'driver' => env('METRICS_STORAGE_DRIVER', 'memory'),
+    'driver' => env('METRICS_STORAGE_DRIVER', 'redis'),
 
     'storage' => [
         'redis' => [
@@ -83,6 +83,13 @@ return [
     */
 
     'exporters' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | HTTP Request Exporters
+        |--------------------------------------------------------------------------
+        */
+
         Exporters\RequestDurationHistogramExporter::class => [
             'enabled' => env('EXPORT_REQUEST_DURATION_HISTOGRAM', true),
             'config' => [
@@ -100,6 +107,31 @@ return [
                 ]
             ]
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Job Exporters
+        |--------------------------------------------------------------------------
+        */
+
+        Exporters\JobDurationHistogramExporter::class => [
+            'enabled' => env('EXPORT_REQUEST_MEMORY_USAGE_HISTOGRAM', true),
+            'config' => [
+                'buckets' => [
+                    0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
+                ]
+            ]
+        ],
+
+        // Exporters\JobMemoryUsageHistogramExporter::class => [
+        //     'enabled' => env('EXPORT_REQUEST_MEMORY_USAGE_HISTOGRAM', true),
+        //     'config' => [
+        //         'buckets' => [
+        //             5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+        //         ]
+        //     ]
+        // ],
+
         // Watchers\BatchWatcher::class => env('TELESCOPE_BATCH_WATCHER', true),
         // Watchers\CacheWatcher::class => env('TELESCOPE_CACHE_WATCHER', true),
 
