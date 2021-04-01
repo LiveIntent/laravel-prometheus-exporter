@@ -2,12 +2,11 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Exporters;
 
+use Laravel\Telescope\EntryType;
 use Laravel\Telescope\IncomingEntry;
 
-class JobDurationHistogramExporter extends Exporter
+class QueryDurationHistogramExporter extends Exporter
 {
-    use RecordsJobMetrics;
-
     /**
      * Check if this exporter should export something for an entry.
      *
@@ -16,7 +15,7 @@ class JobDurationHistogramExporter extends Exporter
      */
     public function shouldExport(IncomingEntry $entry)
     {
-        return false;
+        return $entry->type === EntryType::QUERY;
     }
 
     /**
@@ -30,21 +29,19 @@ class JobDurationHistogramExporter extends Exporter
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'name' => $entry->content['name'],
-            'attempts' => $entry->content['attempts'],
-            'status' => $entry->content['status'],
+            'sql' => $entry->content['sql'],
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
-            'job',
-            'execution_duration_milliseconds',
-            'The job execution duration recorded in milliseconds.',
+            'mysql',
+            'query_duration_milliseconds',
+            'The request duration recorded in milliseconds.',
             array_keys($labels),
             $this->config['buckets']
         );
 
         $histogram->observe(
-            $entry->content['duration'],
+            $entry->content['time'],
             array_values($labels)
         );
     }
