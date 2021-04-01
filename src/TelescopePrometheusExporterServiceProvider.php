@@ -2,13 +2,13 @@
 
 namespace LiveIntent\TelescopePrometheusExporter;
 
+use Prometheus\Storage\APC;
+use Prometheus\Storage\Redis;
+use Prometheus\Storage\Adapter;
+use Prometheus\Storage\InMemory;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use LiveIntent\TelescopePrometheusExporter\Http\Controllers\MetricsController;
-use Prometheus\Storage\Adapter;
-use Prometheus\Storage\APC;
-use Prometheus\Storage\InMemory;
-use Prometheus\Storage\Redis;
 
 class TelescopePrometheusExporterServiceProvider extends ServiceProvider
 {

@@ -2,8 +2,8 @@
 
 namespace LiveIntent\TelescopePrometheusExporter\Tests;
 
-use LiveIntent\TelescopePrometheusExporter\TelescopePrometheusExporterServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use LiveIntent\TelescopePrometheusExporter\TelescopePrometheusExporterServiceProvider;
 
 class TestCase extends Orchestra
 {

@@ -2,9 +2,9 @@
 
 namespace LiveIntent\TelescopePrometheusExporter;
 
-use Laravel\Telescope\IncomingEntry;
 use Laravel\Telescope\Telescope;
 use Prometheus\CollectorRegistry;
+use Laravel\Telescope\IncomingEntry;
 
 class TelescopePrometheusExporter
 {
