@@ -34,6 +34,8 @@ The `metrics` config file contains a list of enabled exporters. Each exporter wi
 
 The storage drivers currently supperted are redis, apc, and in-memory. You may adjust this value by setting the env `METRICS_STORAGE_DRIVER`.
 
+The package uses the in-memory driver by default to help you get started, but you should change this as soon as you are ready as it's not useful for much beyond testing.
+
 You will need the appropriate `pecl` extension installed ([apc](https://pecl.php.net/package/APCU) or [php-redis](https://pecl.php.net/package/redis)).
 
 If you need to clear the storage, you may do so with:

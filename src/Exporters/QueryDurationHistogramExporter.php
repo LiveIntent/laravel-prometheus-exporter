@@ -27,7 +27,7 @@ class QueryDurationHistogramExporter extends Exporter
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'sql' => $this->replaceBindings($event),
+            'sql' => $event->sql
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
@@ -42,44 +42,5 @@ class QueryDurationHistogramExporter extends Exporter
             floatval(number_format($event->time, 2, '.', '')),
             array_values($labels)
         );
-    }
-
-    /**
-     * Format the given bindings to strings.
-     *
-     * @param  \Illuminate\Database\Events\QueryExecuted  $event
-     * @return array
-     */
-    protected function formatBindings($event)
-    {
-        return $event->connection->prepareBindings($event->bindings);
-    }
-
-    /**
-     * Replace the placeholders with the actual bindings.
-     *
-     * @psalm-suppress InvalidScalarArgument
-     * @param  \Illuminate\Database\Events\QueryExecuted  $event
-     * @return string
-     */
-    protected function replaceBindings($event)
-    {
-        $sql = $event->sql;
-
-        foreach ($this->formatBindings($event) as $key => $binding) {
-            $regex = is_numeric($key)
-                ? "/\?(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/"
-                : "/:{$key}(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/";
-
-            if ($binding === null) {
-                $binding = 'null';
-            } elseif (! is_int($binding) && ! is_float($binding)) {
-                $binding = $event->connection->getPdo()->quote($binding);
-            }
-
-            $sql = preg_replace($regex, $binding, $sql, 1);
-        }
-
-        return $sql;
     }
 }
