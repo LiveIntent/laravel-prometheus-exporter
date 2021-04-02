@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Console;
+namespace LiveIntent\LaravelPrometheusExporter\Console;
 
 use Illuminate\Console\Command;
 

@@ -1,38 +1,53 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
-use Laravel\Telescope\IncomingEntry;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 
 class JobDurationHistogramExporter extends Exporter
 {
-    use RecordsJobMetrics;
+    /**
+     * The time the job started processing.
+     *
+     * @var float
+     */
+    private $startTime;
 
     /**
-     * Check if this exporter should export something for an entry.
+     * Register the watcher.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
-     * @return bool
+     * @return void
      */
-    public function shouldExport(IncomingEntry $entry)
+    public function register()
     {
-        return false;
+
+        $this->app['events']->listen(JobProcessing::class, function () {
+            $this->startTime = microtime(true);
+        });
+
+        $this->app['events']->listen(JobProcessed::class, [$this, 'export']);
+        $this->app['events']->listen(JobFailed::class, [$this, 'export']);
     }
 
     /**
-     * Export something for an entry.
+     * Export metrics.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @param  \Illuminate\Queue\Events\JobProcessed|\Illuminate\Queue\Events\JobFailed  $event
      * @return void
      */
-    public function export(IncomingEntry $entry)
+    public function export($event)
     {
+        $job = $event->job;
+        $status = is_a($event, JobProcessed::class) ? 'processed' : 'failed';
+
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'name' => $entry->content['name'],
-            'attempts' => $entry->content['attempts'],
-            'status' => $entry->content['status'],
+            'name' => $job->resolveName(),
+            'attempts' => $job->attempts(),
+            'status' => $status,
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
@@ -40,11 +55,13 @@ class JobDurationHistogramExporter extends Exporter
             'execution_duration_milliseconds',
             'The job execution duration recorded in milliseconds.',
             array_keys($labels),
-            $this->config['buckets']
+            $this->options['buckets']
         );
 
+        $duration = $this->startTime ? floor((microtime(true) - $this->startTime) * 1000) : null;
+
         $histogram->observe(
-            $entry->content['duration'],
+            $duration,
             array_values($labels)
         );
     }

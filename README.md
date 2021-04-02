@@ -1,12 +1,12 @@
-# Laravel Telescope Prometheus Exporter
+# Laravel Prometheus Exporter
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/liveintent/telescope-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/telescope-prometheus-exporter)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/liveintent/telescope-prometheus-exporter/run-tests?label=tests)](https://github.com/liveintent/telescope-prometheus-exporter/actions?query=workflow%3ATests+branch%3Amaster)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/liveintent/telescope-prometheus-exporter/Check%20&%20fix%20styling?label=code%20style)](https://github.com/liveintent/telescope-prometheus-exporter/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/liveintent/telescope-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/telescope-prometheus-exporter)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/liveintent/laravel-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/laravel-prometheus-exporter)
+[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/liveintent/laravel-prometheus-exporter/run-tests?label=tests)](https://github.com/liveintent/laravel-prometheus-exporter/actions?query=workflow%3ATests+branch%3Amaster)
+[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/liveintent/laravel-prometheus-exporter/Check%20&%20fix%20styling?label=code%20style)](https://github.com/liveintent/laravel-prometheus-exporter/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/liveintent/laravel-prometheus-exporter.svg?style=flat-square)](https://packagist.org/packages/liveintent/laravel-prometheus-exporter)
 
 
-This is a Laravel package that collects data via [Telescope](https://laravel.com/docs/8.x/telescope) and exposes a `/metrics` endpoint in your application which can then be scraped by [Prometheus](https://prometheus.io/).
+This is a Laravel package that automatically collects data and exposes a `/metrics` endpoint in your application which can then be scraped by [Prometheus](https://prometheus.io/).
 
 For a full list of exported metrics, see [exporters](#exporters).
 
@@ -15,7 +15,7 @@ For a full list of exported metrics, see [exporters](#exporters).
 You can install the package via composer:
 
 ```bash
-composer require liveintent/telescope-prometheus-exporter
+composer require liveintent/laravel-prometheus-exporter
 ```
 
 The package will auto-register itself, and a `metrics` config file will be added to your project. If you need to copy the config file manually, you may run:
@@ -157,41 +157,41 @@ The following example increments a counter every time the `/` route is visited.
 ```php
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
-use Laravel\Telescope\EntryType;
-use Laravel\Telescope\IncomingEntry;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 
 class HomePageVisitsCountExporter extends Exporter
 {
     /**
-     * Check if this exporter should export something for an entry.
+     * Register the watcher.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
-     * @return bool
+     * @return void
      */
-    public function shouldExport(IncomingEntry $entry)
+    public function register()
     {
-        return $entry->type === EntryType::REQUEST && $entry->content['uri'] === '/';
+        $this->app['events']->listen(RequestHandled::class, [$this, 'export']);
     }
 
     /**
-     * Export metrics for an entry.
+     * Export metrics.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @param  \Illuminate\Foundation\Http\Events\RequestHandled  $event
      * @return void
      */
-    public function export(IncomingEntry $entry)
+    public function export($event)
     {
-        $counter = $this->registry->getOrRegisterCounter(
-            '', 'home_page_visits_counter', 'it is a silly example'
-        );
+        $uri =  str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/';
+        
+        if ($uri === '/') {
+            $counter = $this->registry->getOrRegisterCounter(
+                '', 'home_page_visits_counter', 'it is a silly example'
+            );
 
-        $counter->inc();
+            $counter->inc();
+        }
     }
 }
 ```
 
 Register your Exporter class by placing it in the list of exporters found in the `metrics` config file.
-
-For more advanced usage, or if you need to hook into an event that Telescope does not record, you may implement the `register` method on the exporter which will be called during application startup.

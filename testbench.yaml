@@ -1,2 +1,2 @@
 providers:
-  - LiveIntent\TelescopePrometheusExporter\TelescopePrometheusExporterServiceProvider
+  - LiveIntent\LaravelPrometheusExporter\LaravelPrometheusExporterServiceProvider

@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Tests;
+namespace LiveIntent\LaravelPrometheusExporter\Tests;
 
 class ExampleTest extends TestCase
 {

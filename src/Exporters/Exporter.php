@@ -1,9 +1,8 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
 use Prometheus\CollectorRegistry;
-use Laravel\Telescope\IncomingEntry;
 use Illuminate\Contracts\Foundation\Application;
 
 abstract class Exporter
@@ -23,11 +22,11 @@ abstract class Exporter
     protected $registry;
 
     /**
-     * The exporter config.
+     * The exporter options.
      *
      * @var array
      */
-    protected $config;
+    protected $options;
 
     /**
      * Create a new exporter.
@@ -37,26 +36,25 @@ abstract class Exporter
      * @param  array  $config
      * @return void
      */
-    public function __construct(Application $app, CollectorRegistry $registry, array $config = [])
+    public function __construct(Application $app, CollectorRegistry $registry, array $options = [])
     {
         $this->app = $app;
         $this->registry = $registry;
-        $this->config = $config;
+        $this->options = $options;
     }
 
     /**
-     * Check if this exporter should export something for an entry.
+     * Register the watcher.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
-     * @return bool
-     */
-    abstract public function shouldExport(IncomingEntry $entry);
-
-    /**
-     * Export something for an entry.
-     *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
      * @return void
      */
-    abstract public function export(IncomingEntry $entry);
+    abstract function register();
+
+    /**
+     * Export metrics.
+     *
+     * @param mixed  $event
+     * @return void
+     */
+    abstract public function export($event);
 }

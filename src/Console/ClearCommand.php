@@ -1,12 +1,15 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Console;
+namespace LiveIntent\LaravelPrometheusExporter\Console;
 
 use Illuminate\Console\Command;
 use Prometheus\Storage\Adapter;
+use Illuminate\Console\ConfirmableTrait;
 
 class ClearCommand extends Command
 {
+    use ConfirmableTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -25,10 +28,14 @@ class ClearCommand extends Command
      * Execute the console command.
      *
      * @param  \Prometheus\Storage\Adapter  $adapter
-     * @return void
+     * @return int
      */
     public function handle(Adapter $adapter)
     {
+        if (! $this->confirmToProceed()) {
+            return 1;
+        }
+
         $adapter->wipeStorage();
 
         $this->info('Metric data cleared!');

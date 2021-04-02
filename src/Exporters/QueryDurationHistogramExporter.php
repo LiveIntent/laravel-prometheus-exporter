@@ -1,35 +1,33 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
-use Laravel\Telescope\EntryType;
-use Laravel\Telescope\IncomingEntry;
+use Illuminate\Database\Events\QueryExecuted;
 
 class QueryDurationHistogramExporter extends Exporter
 {
     /**
-     * Check if this exporter should export something for an entry.
+     * Register the watcher.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
-     * @return bool
+     * @return void
      */
-    public function shouldExport(IncomingEntry $entry)
+    public function register()
     {
-        return $entry->type === EntryType::QUERY;
+        $this->app['events']->listen(QueryExecuted::class, [$this, 'export']);
     }
 
     /**
-     * Export something for an entry.
+     * Export metrics.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @param  \Illuminate\Database\Events\QueryExecuted  $event
      * @return void
      */
-    public function export(IncomingEntry $entry)
+    public function export($event)
     {
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'sql' => $entry->content['sql'],
+            'sql' => $this->replaceBindings($event),
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
@@ -37,12 +35,50 @@ class QueryDurationHistogramExporter extends Exporter
             'query_duration_milliseconds',
             'The request duration recorded in milliseconds.',
             array_keys($labels),
-            $this->config['buckets']
+            $this->options['buckets']
         );
 
         $histogram->observe(
-            $entry->content['time'],
+            number_format($event->time, 2, '.', ''),
             array_values($labels)
         );
+    }
+
+    /**
+     * Format the given bindings to strings.
+     *
+     * @param  \Illuminate\Database\Events\QueryExecuted  $event
+     * @return array
+     */
+    protected function formatBindings($event)
+    {
+        return $event->connection->prepareBindings($event->bindings);
+    }
+
+    /**
+     * Replace the placeholders with the actual bindings.
+     *
+     * @param  \Illuminate\Database\Events\QueryExecuted  $event
+     * @return string
+     */
+    protected function replaceBindings($event)
+    {
+        $sql = $event->sql;
+
+        foreach ($this->formatBindings($event) as $key => $binding) {
+            $regex = is_numeric($key)
+                ? "/\?(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/"
+                : "/:{$key}(?=(?:[^'\\\']*'[^'\\\']*')*[^'\\\']*$)/";
+
+            if ($binding === null) {
+                $binding = 'null';
+            } elseif (! is_int($binding) && ! is_float($binding)) {
+                $binding = $event->connection->getPdo()->quote($binding);
+            }
+
+            $sql = preg_replace($regex, $binding, $sql, 1);
+        }
+
+        return $sql;
     }
 }

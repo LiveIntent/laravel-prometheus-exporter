@@ -1,6 +1,6 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Http\Controllers;
+namespace LiveIntent\LaravelPrometheusExporter\Http\Controllers;
 
 use Prometheus\RenderTextFormat;
 use Prometheus\CollectorRegistry;

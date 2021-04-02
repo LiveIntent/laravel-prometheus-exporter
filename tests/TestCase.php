@@ -1,16 +1,16 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Tests;
+namespace LiveIntent\LaravelPrometheusExporter\Tests;
 
 use Orchestra\Testbench\TestCase as Orchestra;
-use LiveIntent\TelescopePrometheusExporter\TelescopePrometheusExporterServiceProvider;
+use LiveIntent\LaravelPrometheusExporter\LaravelPrometheusExporterServiceProvider;
 
 class TestCase extends Orchestra
 {
     protected function getPackageProviders($app)
     {
         return [
-            TelescopePrometheusExporterServiceProvider::class,
+            LaravelPrometheusExporterServiceProvider::class,
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-use LiveIntent\TelescopePrometheusExporter\Exporters;
+use LiveIntent\LaravelPrometheusExporter\Exporters;
 
 return [
 
@@ -75,7 +75,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The following array lists the "exporters" that will be registered. Each
-    | exporter takes data collected by Telescope and makes it available for
+    | exporter takes data collected by Laravel and makes it available for
     | the metrics endpoint to expose. Prometheus can then store the data.
     |
     | You may also define additional custom exporters and add them below.

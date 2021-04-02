@@ -1,37 +1,35 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter\Exporters;
+namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
-use Laravel\Telescope\EntryType;
-use Laravel\Telescope\IncomingEntry;
+use Illuminate\Foundation\Http\Events\RequestHandled;
 
 class RequestMemoryUsageHistogramExporter extends Exporter
 {
     /**
-     * Check if this exporter should export something for an entry.
+     * Register the watcher.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
-     * @return bool
+     * @return void
      */
-    public function shouldExport(IncomingEntry $entry)
+    public function register()
     {
-        return $entry->type === EntryType::REQUEST;
+        $this->app['events']->listen(RequestHandled::class, [$this, 'export']);
     }
 
     /**
-     * Export something for an entry.
+     * Export metrics.
      *
-     * @param \Laravel\Telescope\IncomingEntry  $entry
+     * @param  \Illuminate\Foundation\Http\Events\RequestHandled  $event
      * @return void
      */
-    public function export(IncomingEntry $entry)
+    public function export($event)
     {
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'code' => $entry->content['response_status'],
-            'method' => $entry->content['method'],
-            'path' => $entry->content['uri'],
+            'code' => $event->response->getStatusCode(),
+            'method' => $event->request->method(),
+            'path' => str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/',
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
@@ -39,11 +37,13 @@ class RequestMemoryUsageHistogramExporter extends Exporter
             'request_memory_usage_megabytes',
             'The memory usage of the request in megabytes.',
             array_keys($labels),
-            $this->config['buckets']
+            $this->options['buckets']
         );
 
+        $memory =  round(memory_get_peak_usage(true) / 1024 / 1024, 1);
+
         $histogram->observe(
-            $entry->content['memory'],
+            $memory,
             array_values($labels)
         );
     }

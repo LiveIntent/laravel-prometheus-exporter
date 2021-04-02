@@ -1,16 +1,17 @@
 <?php
 
-namespace LiveIntent\TelescopePrometheusExporter;
+namespace LiveIntent\LaravelPrometheusExporter;
 
 use Prometheus\Storage\APC;
 use Prometheus\Storage\Redis;
 use Prometheus\Storage\Adapter;
 use Prometheus\Storage\InMemory;
+use Prometheus\CollectorRegistry;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use LiveIntent\TelescopePrometheusExporter\Http\Controllers\MetricsController;
+use LiveIntent\LaravelPrometheusExporter\Http\Controllers\MetricsController;
 
-class TelescopePrometheusExporterServiceProvider extends ServiceProvider
+class LaravelPrometheusExporterServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
@@ -25,8 +26,7 @@ class TelescopePrometheusExporterServiceProvider extends ServiceProvider
 
         $this->registerRoute();
         $this->registerPublishing();
-
-        TelescopePrometheusExporter::start($this->app);
+        $this->registerWatchers();
     }
 
     /**
@@ -58,6 +58,22 @@ class TelescopePrometheusExporterServiceProvider extends ServiceProvider
                 __DIR__.'/../config/metrics.php' => config_path('metrics.php'),
             ], 'metrics-config');
         }
+    }
+
+    /**
+     * Register the watchers.
+     *
+     * @return void
+     */
+    private function registerWatchers()
+    {
+        $registry = $this->app->make(CollectorRegistry::class);
+
+        $exporters = collect(config('metrics.exporters'))
+            ->filter(fn ($config) => $config['enabled'])
+            ->map(fn ($config, $class) => new $class($this->app, $registry, data_get($config, 'config', [])));
+
+        $exporters->each->register();
     }
 
     /**
