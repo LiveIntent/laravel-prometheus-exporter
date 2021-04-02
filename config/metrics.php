@@ -92,7 +92,7 @@ return [
 
         Exporters\RequestDurationHistogramExporter::class => [
             'enabled' => env('EXPORT_REQUEST_DURATION_HISTOGRAM', true),
-            'config' => [
+            'options' => [
                 'buckets' => [
                     5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
                 ]
@@ -101,7 +101,7 @@ return [
 
         Exporters\RequestMemoryUsageHistogramExporter::class => [
             'enabled' => env('EXPORT_REQUEST_MEMORY_USAGE_HISTOGRAM', true),
-            'config' => [
+            'options' => [
                 'buckets' => [
                     0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
                 ]
@@ -116,7 +116,7 @@ return [
 
         Exporters\JobDurationHistogramExporter::class => [
             'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
-            'config' => [
+            'options' => [
                 'buckets' => [
                     0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
                 ]
@@ -131,7 +131,7 @@ return [
 
         Exporters\QueryDurationHistogramExporter::class => [
             'enabled' => env('EXPORT_QUERY_DURATION_HISTOGRAM', true),
-            'config' => [
+            'options' => [
                 'buckets' => [
                     0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
                 ]

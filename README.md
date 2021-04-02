@@ -55,7 +55,7 @@ This will export histogram data for request duration.
 ```php
 Exporters\RequestDurationHistogramExporter::class => [
     'enabled' => env('EXPORT_REQUEST_DURATION_HISTOGRAM', true),
-    'config' => [
+    'options'
         'buckets' => [
             5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
         ],
@@ -82,7 +82,7 @@ This will export histogram data for request memory usage.
 ```php
 Exporters\RequestMemoryUsageHistogramExporter::class => [
     'enabled' => env('EXPORT_MEMORY_USAGE_HISTOGRAM', true),
-    'config' => [
+    'options'
         'buckets' => [
             5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
         ],
@@ -109,7 +109,7 @@ This will export histogram data for job execution duration.
 ```php
 Exporters\JobDurationHistogramExporter::class => [
     'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
-    'config' => [
+    'options'
         'buckets' => [
             5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
         ],
@@ -136,7 +136,7 @@ This will export histogram data for query execution times.
 ```php
 Exporters\QueryDurationHistogramExporter::class => [
     'enabled' => env('EXPORT_QUERY_DURATION_HISTOGRAM', true),
-    'config' => [
+    'options'
         'buckets' => [
             5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
         ],
