@@ -39,7 +39,7 @@ class QueryDurationHistogramExporter extends Exporter
         );
 
         $histogram->observe(
-            number_format($event->time, 2, '.', ''),
+            floatval(number_format($event->time, 2, '.', '')),
             array_values($labels)
         );
     }
@@ -58,6 +58,7 @@ class QueryDurationHistogramExporter extends Exporter
     /**
      * Replace the placeholders with the actual bindings.
      *
+     * @psalm-suppress InvalidScalarArgument
      * @param  \Illuminate\Database\Events\QueryExecuted  $event
      * @return string
      */

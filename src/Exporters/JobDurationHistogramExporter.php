@@ -46,7 +46,7 @@ class JobDurationHistogramExporter extends Exporter
             'service' => config('app.name'),
             'environment' => config('app.env'),
             'name' => $job->resolveName(),
-            'attempts' => $job->attempts(),
+            'attempts' => strval($job->attempts()),
             'status' => $status,
         ];
 

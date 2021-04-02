@@ -13,4 +13,12 @@
             <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <MoreSpecificImplementedParamType errorLevel="suppress" />
+    </issueHandlers>
+
+    <mockClasses>
+        <class name="Illuminate\Contracts\Foundation\Application" />
+    </mockClasses>
 </psalm>

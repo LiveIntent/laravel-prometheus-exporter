@@ -28,7 +28,7 @@ class ClearCommand extends Command
      * Execute the console command.
      *
      * @param  \Prometheus\Storage\Adapter  $adapter
-     * @return int
+     * @return int|null
      */
     public function handle(Adapter $adapter)
     {

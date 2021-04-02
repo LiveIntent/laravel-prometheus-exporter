@@ -27,7 +27,7 @@ class RequestDurationHistogramExporter extends Exporter
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'code' => $event->response->getStatusCode(),
+            'code' => strval($event->response->getStatusCode()),
             'method' => $event->request->method(),
             'path' => str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/',
         ];
