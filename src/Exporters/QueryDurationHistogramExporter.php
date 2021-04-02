@@ -27,7 +27,7 @@ class QueryDurationHistogramExporter extends Exporter
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'sql' => $event->sql
+            'sql' => $event->sql,
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
