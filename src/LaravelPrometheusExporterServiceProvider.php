@@ -71,7 +71,7 @@ class LaravelPrometheusExporterServiceProvider extends ServiceProvider
 
         $exporters = collect(config('metrics.exporters'))
             ->filter(fn ($config) => $config['enabled'])
-            ->map(fn ($config, $class) => new $class($this->app, $registry, data_get($config, 'config', [])));
+            ->map(fn ($config, $class) => new $class($this->app, $registry, data_get($config, 'options', [])));
 
         $exporters->each->register();
     }
