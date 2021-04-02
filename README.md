@@ -154,7 +154,7 @@ Exporters\QueryDurationHistogramExporter::class => [
 
 ### Writing New Exporters
 
-You may also write your own exporter. You only need to implement two methods, `shouldExport` and `export`.
+You may also write your own exporter. You only need to implement two methods, `register` and `export`.
 
 The following example increments a counter every time the `/` route is visited.
 
