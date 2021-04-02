@@ -68,10 +68,10 @@ Exporters\RequestDurationHistogramExporter::class => [
 | name        | description            | example            |
 |:------------|:-----------------------|--------------------|
 | service     | name of the service    | my-amazing-api     |
-| environment | the environment        | qa, prod, etc      |
-| code        | the http response code | 200, 400, etc      |
-| method      | the http method        | GET, POST, etc     |
-| path        | the uri of the request | '/', '/posts', etc |
+| environment | the environment        | `qa`, `prod`, etc  |
+| code        | the http response code | `200`, `400`, etc  |
+| method      | the http method        | `GET`, `POST`, etc |
+| path        | the uri of the request | `/`, `/posts`, etc |
 
 #### Request Memory Usage Historam Exporter - `http_request_memory_usage_megabytes`
 
@@ -95,10 +95,10 @@ Exporters\RequestMemoryUsageHistogramExporter::class => [
 | name        | description            | example            |
 |:------------|:-----------------------|--------------------|
 | service     | name of the service    | my-amazing-api     |
-| environment | the environment        | qa, prod, etc      |
-| code        | the http response code | 200, 400, etc      |
-| method      | the http method        | GET, POST, etc     |
-| path        | the uri of the request | '/', '/posts', etc |
+| environment | the environment        | `qa`, `prod`, etc  |
+| code        | the http response code | `200`, `400`, etc  |
+| method      | the http method        | `GET`, `POST`, etc |
+| path        | the uri of the request | `/`, `/posts`, etc |
 
 #### Job Duration Historam Exporter - `job_execution_duration_milliseconds_bucket`
 
@@ -119,13 +119,13 @@ Exporters\JobDurationHistogramExporter::class => [
 
 ##### Labels
 
-| name        | description                                | example                   |
-|:------------|:-------------------------------------------|---------------------------|
-| service     | name of the service                        | my-amazing-api            |
-| environment | the environment                            | qa, prod, etc             |
-| name        | the classname of the job                   | App\\Jobs\\ProcessPayment |
-| attempts    | the number of times the job has been tried | 1                         |
-| status      | the job status                             | procesed, failed          |
+| name        | description                                | example                     |
+|:------------|:-------------------------------------------|-----------------------------|
+| service     | name of the service                        | my-amazing-api              |
+| environment | the environment                            | `qa`, `prod`, etc           |
+| name        | the classname of the job                   | `App\\Jobs\\ProcessPayment` |
+| attempts    | the number of times the job has been tried | 1                           |
+| status      | the job status                             | `procesed`, `failed`        |
 
 #### Query Duration Historam Exporter - `db_query_duration_milliseconds_bucket`
 
@@ -146,11 +146,11 @@ Exporters\QueryDurationHistogramExporter::class => [
 
 ##### Labels
 
-| name        | description         | example               |
-|:------------|:--------------------|-----------------------|
-| service     | name of the service | my-amazing-api        |
-| environment | the environment     | qa, prod, etc         |
-| sql         | the sql query       | SELECT * FROM `users` |
+| name        | description         | example                    |
+|:------------|:--------------------|----------------------------|
+| service     | name of the service | my-amazing-api             |
+| environment | the environment     | `qa`, `prod`, etc          |
+| sql         | the sql query       | ``SELECT * FROM `users` `` |
 
 ### Writing New Exporters
 
