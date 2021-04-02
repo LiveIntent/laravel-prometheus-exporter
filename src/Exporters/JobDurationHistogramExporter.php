@@ -22,7 +22,6 @@ class JobDurationHistogramExporter extends Exporter
      */
     public function register()
     {
-
         $this->app['events']->listen(JobProcessing::class, function () {
             $this->startTime = microtime(true);
         });

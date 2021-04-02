@@ -40,7 +40,7 @@ class RequestMemoryUsageHistogramExporter extends Exporter
             $this->options['buckets']
         );
 
-        $memory =  round(memory_get_peak_usage(true) / 1024 / 1024, 1);
+        $memory = round(memory_get_peak_usage(true) / 1024 / 1024, 1);
 
         $histogram->observe(
             $memory,

@@ -48,7 +48,7 @@ abstract class Exporter
      *
      * @return void
      */
-    abstract function register();
+    abstract public function register();
 
     /**
      * Export metrics.
