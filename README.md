@@ -18,11 +18,13 @@ You can install the package via composer:
 composer require liveintent/laravel-prometheus-exporter
 ```
 
-The package will auto-register itself, and a `metrics` config file will be added to your project. If you need to copy the config file manually, you may run:
+Once installed run the following command to generate the `metrics` config file. 
 
 ```bash
 php artisan metrics:install
 ```
+
+The package will auto-register itself.
 
 ## Usage
 
