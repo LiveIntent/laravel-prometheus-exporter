@@ -28,7 +28,9 @@ class QueryDurationHistogramExporter extends Exporter
             fn ($pattern) => preg_match($pattern, $event->sql)
         );
 
-        if ($shouldIgnore) return;
+        if ($shouldIgnore) {
+            return;
+        }
 
         $labels = [
             'service' => config('app.name'),

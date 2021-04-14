@@ -24,13 +24,15 @@ class RequestMemoryUsageHistogramExporter extends Exporter
      */
     public function export($event)
     {
-        $path =  str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/';
+        $path = str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/';
 
         $shouldIgnore = collect(data_get($this->options, 'ignore_path_regex'))->some(
             fn ($pattern) => preg_match($pattern, $path)
         );
 
-        if ($shouldIgnore) return;
+        if ($shouldIgnore) {
+            return;
+        }
 
         $labels = [
             'service' => config('app.name'),
