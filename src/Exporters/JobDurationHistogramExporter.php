@@ -54,7 +54,7 @@ class JobDurationHistogramExporter extends Exporter
             'process_time_seconds',
             'The job processing time recorded in seconds.',
             array_keys($labels),
-            dat_get($this->options, 'buckets')
+            data_get($this->options, 'buckets')
         );
 
         $duration = $this->startTime ? (microtime(true) - $this->startTime) : null;
