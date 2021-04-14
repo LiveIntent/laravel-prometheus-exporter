@@ -51,13 +51,13 @@ class JobDurationHistogramExporter extends Exporter
 
         $histogram = $this->registry->getOrRegisterHistogram(
             'job',
-            'execution_duration_milliseconds',
-            'The job execution duration recorded in milliseconds.',
+            'process_time_seconds',
+            'The job processing time recorded in seconds.',
             array_keys($labels),
-            $this->options['buckets']
+            dat_get($this->options, 'buckets')
         );
 
-        $duration = $this->startTime ? floor((microtime(true) - $this->startTime) * 1000) : null;
+        $duration = $this->startTime ? (microtime(true) - $this->startTime) : null;
 
         $histogram->observe(
             $duration,

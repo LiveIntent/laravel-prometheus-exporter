@@ -24,6 +24,12 @@ class QueryDurationHistogramExporter extends Exporter
      */
     public function export($event)
     {
+        $shouldIgnore = collect(data_get($this->options, 'ignore_query_regex'))->some(
+            fn ($pattern) => preg_match($pattern, $event->sql)
+        );
+
+        if ($shouldIgnore) return;
+
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
@@ -32,14 +38,14 @@ class QueryDurationHistogramExporter extends Exporter
 
         $histogram = $this->registry->getOrRegisterHistogram(
             'db',
-            'query_duration_milliseconds',
-            'The request duration recorded in milliseconds.',
+            'query_time_seconds',
+            'The query time recorded in seconds.',
             array_keys($labels),
-            $this->options['buckets']
+            data_get($this->options, 'buckets')
         );
 
         $histogram->observe(
-            floatval(number_format($event->time, 2, '.', '')),
+            $event->time / 1000,
             array_values($labels)
         );
     }

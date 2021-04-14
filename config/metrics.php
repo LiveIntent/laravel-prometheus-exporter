@@ -52,7 +52,7 @@ return [
             'timeout' => 0.1,
             'read_timeout' => '10',
             'persistent_connections' => null,
-            'prefix' => env('REDIS_METRICS_PREFIX', null)
+            'prefix' => env('REDIS_METRICS_PREFIX', null),
         ],
     ],
 
@@ -75,7 +75,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The following array lists the "exporters" that will be registered. Each
-    | exporter takes data collected by Laravel and makes it available for
+    | exporter takes the data captured by Laravel and makes it available to
     | the metrics endpoint to expose. Prometheus can then store the data.
     |
     | You may also define additional custom exporters and add them below.
@@ -94,18 +94,24 @@ return [
             'enabled' => env('EXPORT_REQUEST_DURATION_HISTOGRAM', true),
             'options' => [
                 'buckets' => [
-                    5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+                    0.01, 0.02, 0.03, 0.04, 0.05, .06, 1, 1.2, 1.5, 1.8, 2, 3, 4, 5, 10
+                ],
+                'ignore_path_regex' => [
+                    '/telescope/'
                 ]
-            ]
+            ],
         ],
 
         Exporters\RequestMemoryUsageHistogramExporter::class => [
             'enabled' => env('EXPORT_REQUEST_MEMORY_USAGE_HISTOGRAM', true),
             'options' => [
                 'buckets' => [
-                    0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
+                    500000, 1000000, 2000000, 3000000, 4000000, 5000000, 6000000, 7000000, 8000000, 9000000, 10000000, 30000000
+                ],
+                'ignore_path_regex' => [
+                    '/telescope/'
                 ]
-            ]
+            ],
         ],
 
         /*
@@ -118,9 +124,9 @@ return [
             'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
             'options' => [
                 'buckets' => [
-                    0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
-                ]
-            ]
+                    0.01, 0.02, 0.03, 0.04, 0.05, .06, 1, 1.2, 1.5, 1.8, 2, 3, 4, 5, 10
+                ],
+            ],
         ],
 
         /*
@@ -133,10 +139,15 @@ return [
             'enabled' => env('EXPORT_QUERY_DURATION_HISTOGRAM', true),
             'options' => [
                 'buckets' => [
-                    0.1, 0.2, 0.3, 0.4, 0.5, 1, 5, 10, 20, 50, 100, 500
+                    .001, .005, 0.01, 0.02, 0.03, 0.04, 0.05, .06, 1, 1.2, 1.5, 1.8, 2, 3, 4, 5, 10
+                ],
+                'ignore_query_regex' => [
+                    '/telescope_entries/',
+                    '/create\s+table/',
+                    '/alter\s+table/',
+                    '/drop\s+table/',
                 ]
-            ]
+            ],
         ],
-
     ],
 ];

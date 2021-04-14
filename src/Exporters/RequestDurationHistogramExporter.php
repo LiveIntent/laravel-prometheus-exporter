@@ -24,24 +24,32 @@ class RequestDurationHistogramExporter extends Exporter
      */
     public function export($event)
     {
+        $path =  str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/';
+
+        $shouldIgnore = collect(data_get($this->options, 'ignore_path_regex'))->some(
+            fn ($pattern) => preg_match($pattern, $path)
+        );
+
+        if ($shouldIgnore) return;
+
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'code' => strval($event->response->getStatusCode()),
+            'response_code' => strval($event->response->getStatusCode()),
             'method' => $event->request->method(),
-            'path' => str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/',
+            'path' => $path
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
             'http',
-            'request_duration_milliseconds',
-            'The request duration recorded in milliseconds.',
+            'request_duration_seconds',
+            'The request duration recorded in seconds.',
             array_keys($labels),
-            $this->options['buckets']
+            data_get($this->options, 'buckets')
         );
 
         $startTime = defined('LARAVEL_START') ? LARAVEL_START : $event->request->server('REQUEST_TIME_FLOAT');
-        $duration = $startTime ? floor((microtime(true) - $startTime) * 1000) : null;
+        $duration = $startTime ? (microtime(true) - $startTime) : null;
 
         $histogram->observe(
             $duration,

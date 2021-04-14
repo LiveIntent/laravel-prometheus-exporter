@@ -24,26 +24,32 @@ class RequestMemoryUsageHistogramExporter extends Exporter
      */
     public function export($event)
     {
+        $path =  str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/';
+
+        $shouldIgnore = collect(data_get($this->options, 'ignore_path_regex'))->some(
+            fn ($pattern) => preg_match($pattern, $path)
+        );
+
+        if ($shouldIgnore) return;
+
         $labels = [
             'service' => config('app.name'),
             'environment' => config('app.env'),
-            'code' => strval($event->response->getStatusCode()),
+            'response_code' => strval($event->response->getStatusCode()),
             'method' => $event->request->method(),
-            'path' => str_replace($event->request->root(), '', $event->request->fullUrl()) ?: '/',
+            'path' => $path,
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
             'http',
-            'request_memory_usage_megabytes',
-            'The memory usage of the request in megabytes.',
+            'request_memory_usage_bytes',
+            'The memory usage of the request in bytes.',
             array_keys($labels),
-            $this->options['buckets']
+            data_get($this->options, 'buckets')
         );
 
-        $memory = round(memory_get_peak_usage(true) / 1024 / 1024, 1);
-
         $histogram->observe(
-            $memory,
+            memory_get_peak_usage(true),
             array_values($labels)
         );
     }

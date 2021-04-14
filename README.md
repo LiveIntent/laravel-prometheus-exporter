@@ -46,7 +46,7 @@ php artisan metrics:clear
 
 ### Exporters
 
-#### Request Duration Historam Exporter - `http_request_duration_milliseconds_bucket`
+#### Request Duration Historam Exporter - `http_request_duration_seconds_bucket`
 
 This will export histogram data for request duration. 
 
@@ -65,15 +65,15 @@ Exporters\RequestDurationHistogramExporter::class => [
 
 ##### Labels
 
-| name        | description            | example            |
-|:------------|:-----------------------|--------------------|
-| service     | name of the service    | my-amazing-api     |
-| environment | the environment        | `qa`, `prod`, etc  |
-| code        | the http response code | `200`, `400`, etc  |
-| method      | the http method        | `GET`, `POST`, etc |
-| path        | the uri of the request | `/`, `/posts`, etc |
+| name          | description            | example            |
+|:--------------|:-----------------------|--------------------|
+| service       | name of the service    | my-amazing-api     |
+| environment   | the environment        | `qa`, `prod`, etc  |
+| response_code | the http response code | `200`, `400`, etc  |
+| method        | the http method        | `GET`, `POST`, etc |
+| path          | the uri of the request | `/`, `/posts`, etc |
 
-#### Request Memory Usage Historam Exporter - `http_request_memory_usage_megabytes`
+#### Request Memory Usage Historam Exporter - `http_request_memory_usage_bytes`
 
 This will export histogram data for request memory usage. 
 
@@ -100,7 +100,7 @@ Exporters\RequestMemoryUsageHistogramExporter::class => [
 | method      | the http method        | `GET`, `POST`, etc |
 | path        | the uri of the request | `/`, `/posts`, etc |
 
-#### Job Duration Historam Exporter - `job_execution_duration_milliseconds_bucket`
+#### Job Duration Historam Exporter - `job_process_time_seconds_bucket`
 
 This will export histogram data for job execution duration. 
 
@@ -127,7 +127,7 @@ Exporters\JobDurationHistogramExporter::class => [
 | attempts    | the number of times the job has been tried | 1                           |
 | status      | the job status                             | `procesed`, `failed`        |
 
-#### Query Duration Historam Exporter - `db_query_duration_milliseconds_bucket`
+#### Query Duration Historam Exporter - `db_query_time_seconds_bucket`
 
 This will export histogram data for query execution times. 
 
