@@ -100,18 +100,18 @@ Exporters\RequestMemoryUsageHistogramExporter::class => [
 | method      | the http method        | `GET`, `POST`, etc |
 | path        | the uri of the request | `/`, `/posts`, etc |
 
-#### Job Duration Historam Exporter - `job_process_time_seconds_bucket`
+#### Job Processing Time Historam Exporter - `job_process_time_seconds_bucket`
 
 This will export histogram data for job execution duration. 
 
 ##### Example
 
 ```php
-Exporters\JobDurationHistogramExporter::class => [
-    'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
+Exporters\JobProcessTimeHistogramExporter::class => [
+    'enabled' => env('EXPORT_JOB_PROCESS_TIME_HISTOGRAM', true),
     'options'
         'buckets' => [
-            5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200
+            0.1, .3, .5, .7, 1, 2, 3, 4, 5, 10, 30, 40, 60,
         ],
     ],
 ],
@@ -124,8 +124,32 @@ Exporters\JobDurationHistogramExporter::class => [
 | service     | name of the service                        | my-amazing-api              |
 | environment | the environment                            | `qa`, `prod`, etc           |
 | name        | the classname of the job                   | `App\\Jobs\\ProcessPayment` |
-| attempts    | the number of times the job has been tried | 1                           |
 | status      | the job status                             | `procesed`, `failed`        |
+
+#### Job Wait Time Historam Exporter - `job_wait_time_seconds_bucket`
+
+This will export histogram data for the time a job had to wait on the queue. 
+
+##### Example
+
+```php
+Exporters\JobWaitTimeHistogramExporter::class => [
+    'enabled' => env('EXPORT_JOB_WAIT_TIME_HISTOGRAM', true),
+    'options'
+        'buckets' => [
+            0.1, .3, .5, .7, 1, 2, 3, 4, 5, 10, 30, 40, 60,
+        ],
+    ],
+],
+```
+
+##### Labels
+
+| name        | description                                | example                     |
+|:------------|:-------------------------------------------|-----------------------------|
+| service     | name of the service                        | my-amazing-api              |
+| environment | the environment                            | `qa`, `prod`, etc           |
+| name        | the classname of the job                   | `App\\Jobs\\ProcessPayment` |
 
 #### Query Duration Historam Exporter - `db_query_time_seconds_bucket`
 

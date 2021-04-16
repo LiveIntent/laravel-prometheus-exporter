@@ -6,7 +6,7 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 
-class JobDurationHistogramExporter extends Exporter
+class JobProcessTimeHistogramExporter extends Exporter
 {
     /**
      * The time the job started processing.
@@ -22,7 +22,7 @@ class JobDurationHistogramExporter extends Exporter
      */
     public function register()
     {
-        $this->app['events']->listen(JobProcessing::class, function () {
+        $this->app['events']->listen(JobProcessing::class, function ($e) {
             $this->startTime = microtime(true);
         });
 
@@ -45,7 +45,6 @@ class JobDurationHistogramExporter extends Exporter
             'service' => config('app.name'),
             'environment' => config('app.env'),
             'name' => $job->resolveName(),
-            'attempts' => strval($job->attempts()),
             'status' => $status,
         ];
 

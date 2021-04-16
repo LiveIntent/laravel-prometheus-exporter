@@ -120,11 +120,20 @@ return [
         |--------------------------------------------------------------------------
         */
 
-        Exporters\JobDurationHistogramExporter::class => [
-            'enabled' => env('EXPORT_JOB_DURATION_HISTOGRAM', true),
+        Exporters\JobProcessTimeHistogramExporter::class => [
+            'enabled' => env('EXPORT_JOB_PROCESS_TIME_HISTOGRAM', true),
             'options' => [
                 'buckets' => [
                     0.01, 0.02, 0.03, 0.04, 0.05, .06, 1, 1.2, 1.5, 1.8, 2, 3, 4, 5, 10
+                ],
+            ],
+        ],
+
+        Exporters\JobWaitTimeHistogramExporter::class => [
+            'enabled' => env('EXPORT_JOB_WAIT_TIME_HISTOGRAM', true),
+            'options' => [
+                'buckets' => [
+                    0.1, .3, .5, .7, 1, 2, 3, 4, 5, 10, 30, 40, 60,
                 ],
             ],
         ],
