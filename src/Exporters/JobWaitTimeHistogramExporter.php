@@ -28,7 +28,7 @@ class JobWaitTimeHistogramExporter extends Exporter
         $job = $event->job;
         $pushedAt = data_get($job->payload(), 'pushedAt');
 
-        if (!$pushedAt) {
+        if (! $pushedAt) {
             return;
         }
 
