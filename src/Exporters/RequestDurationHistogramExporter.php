@@ -39,7 +39,7 @@ class RequestDurationHistogramExporter extends Exporter
             'environment' => config('app.env'),
             'response_code' => strval($event->response->getStatusCode()),
             'method' => $event->request->method(),
-            'path' => $path,
+            'path' => $event->request->route()->uri,
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
