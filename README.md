@@ -130,6 +130,8 @@ Exporters\JobProcessTimeHistogramExporter::class => [
 
 This will export histogram data for the time a job had to wait on the queue. 
 
+**Note:** This exporter relies on the default cache driver of the app.
+
 ##### Example
 
 ```php

@@ -135,6 +135,10 @@ return [
                 'buckets' => [
                     0.1, .3, .5, .7, 1, 2, 3, 4, 5, 10, 30, 40, 60,
                 ],
+                'cache' => [
+                    'store' => 'redis',
+                    'expiration' => now()->addDay()
+                ]
             ],
         ],
 
