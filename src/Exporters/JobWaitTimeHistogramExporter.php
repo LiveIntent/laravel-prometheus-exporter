@@ -28,7 +28,7 @@ class JobWaitTimeHistogramExporter extends Exporter
     /**
      * Get the cache driver to use.
      *
-     * @return \Illuminate\Contracts\Cache\Store
+     * @return \Illuminate\Contracts\Cache\Repository
      */
     private function getCache()
     {
