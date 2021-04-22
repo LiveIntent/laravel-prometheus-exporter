@@ -4,6 +4,11 @@ All notable changes to `laravel-prometheus-exporter` will be documented in this 
 
 Everything in v1 is subject to breaking changes while we work out the kinks.
 
+## 1.4.0 - 2021-04-22
+
+- go back to using horizon
+- account for batched jobs in wait time
+
 ## 1.3.0 - 2021-04-21
 
 - use our own pushedAt timestamp via Cache so as not to rely on horizon

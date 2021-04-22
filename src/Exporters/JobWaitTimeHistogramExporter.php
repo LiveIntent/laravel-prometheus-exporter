@@ -3,51 +3,40 @@
 namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Queue\Events\JobQueued;
+use Illuminate\Contracts\Queue\Job;
+use Illuminate\Bus\BatchRepository;
 use Illuminate\Queue\Events\JobProcessing;
 
 class JobWaitTimeHistogramExporter extends Exporter
 {
     /**
      * Register the watcher.
-     *
-     * @return void
      */
     public function register()
     {
-        $this->app['events']->listen(JobQueued::class, function ($event) {
-            $expiration = data_get($this->options, 'cache.expiration', now()->addDay());
-
-            $this->getCache()->put('job_'.$event->id, microtime(true), $expiration);
-        });
-
         $this->app['events']->listen(JobProcessing::class, [$this, 'export']);
-    }
-
-    /**
-     * Get the cache driver to use.
-     *
-     * @return \Illuminate\Contracts\Cache\Repository
-     */
-    private function getCache()
-    {
-        return Cache::store(data_get($this->options, 'cache.store'));
     }
 
     /**
      * Export metrics.
      *
-     * @param  \Illuminate\Queue\Events\JobProcessed|\Illuminate\Queue\Events\JobFailed  $event
-     * @return void
+     * @param \Illuminate\Queue\Events\JobFailed|\Illuminate\Queue\Events\JobProcessed $event
      */
     public function export($event)
     {
+        // Normal jobs that are dispatched through Horizon will have a
+        // `pushedAt` timestamp that we can use for our caclulations
         $job = $event->job;
+        $pushedAt = data_get($job->payload(), 'pushedAt');
 
-        $pushedAt = $this->getCache()->get('job_'.$job->getJobId());
+        // Batched jobs unfortunately do not contain their own pushedAt
+        // timestamp, but the batch itself does have a timestamp for us
+        if (!$pushedAt) {
+            $batch = $this->getBatch($job);
+            $pushedAt = data_get($batch, 'createdAt');
+        }
 
-        if (! $pushedAt) {
+        if (!$pushedAt) {
             return;
         }
 
@@ -69,5 +58,24 @@ class JobWaitTimeHistogramExporter extends Exporter
             Carbon::parse($pushedAt)->floatDiffInSeconds(),
             array_values($labels)
         );
+    }
+
+    /**
+     * Get the encompassing batch of a job.
+     *
+     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @return \Illuminate\Bus\Batch|null
+     */
+    private function getBatch(Job $job)
+    {
+        return rescue(function () use ($job) {
+            $json = json_decode($job->getRawBody());
+            $instance = unserialize(data_get($json, 'data.command'));
+            $batchId = data_get($instance, 'batchId');
+
+            if ($batchId) {
+                return resolve(BatchRepository::class)->find($batchId);
+            }
+        });
     }
 }
