@@ -3,8 +3,8 @@
 namespace LiveIntent\LaravelPrometheusExporter\Exporters;
 
 use Carbon\Carbon;
-use Illuminate\Contracts\Queue\Job;
 use Illuminate\Bus\BatchRepository;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Queue\Events\JobProcessing;
 
 class JobWaitTimeHistogramExporter extends Exporter
@@ -31,12 +31,12 @@ class JobWaitTimeHistogramExporter extends Exporter
 
         // Batched jobs unfortunately do not contain their own pushedAt
         // timestamp, but the batch itself does have a timestamp for us
-        if (!$pushedAt) {
+        if (! $pushedAt) {
             $batch = $this->getBatch($job);
             $pushedAt = data_get($batch, 'createdAt');
         }
 
-        if (!$pushedAt) {
+        if (! $pushedAt) {
             return;
         }
 
