@@ -8,9 +8,18 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@master
         with:
           ref: ${{ github.head_ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: 8.0
+          coverage: none
+
+      - name: Install dependencies
+        run: composer i
 
       - name: Run PHP CS Fixer
         uses: docker://oskarstark/php-cs-fixer-ga
