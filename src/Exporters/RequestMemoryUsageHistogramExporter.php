@@ -39,7 +39,7 @@ class RequestMemoryUsageHistogramExporter extends Exporter
             'environment' => config('app.env'),
             'response_code' => strval($event->response->getStatusCode()),
             'method' => $event->request->method(),
-            'path' => $event->request->route() ? $event->request()->route()->uri : null,
+            'path' => $event->request->route() ? $event->request->route()->uri : null,
         ];
 
         $histogram = $this->registry->getOrRegisterHistogram(
