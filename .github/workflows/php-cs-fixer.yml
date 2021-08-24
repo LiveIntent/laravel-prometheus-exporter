@@ -22,9 +22,7 @@ jobs:
         run: composer i
 
       - name: Run PHP CS Fixer
-        uses: docker://oskarstark/php-cs-fixer-ga
-        with:
-          args: --allow-risky=yes
+        run: ./vendor/bin/php-cs-fixer fix --allow-risky=yes
 
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4
